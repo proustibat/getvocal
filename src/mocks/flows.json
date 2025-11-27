@@ -1,0 +1,155 @@
+[
+  {
+    "id": "flow-bar-stock",
+    "name": "Beer Keg Stock Assistant",
+    "description": "Helps a bar manager check keg levels and decide whether to reorder.",
+    "steps": [
+      {
+        "id": "bar-step-1",
+        "label": "Welcome",
+        "type": "message",
+        "content": "Hi! I’ll help you check your beer kegs stock."
+      },
+      {
+        "id": "bar-step-2",
+        "label": "Ask IPA level",
+        "type": "question",
+        "content": "What is the current level of your IPA keg (in %)?"
+      },
+      {
+        "id": "bar-step-3",
+        "label": "IPA decision",
+        "type": "decision",
+        "content": "If level < 20%, suggest reordering a new IPA keg. Otherwise, continue to check other products."
+      },
+      {
+        "id": "bar-step-4",
+        "label": "Suggest IPA reorder",
+        "type": "message",
+        "content": "I recommend ordering a new IPA keg."
+      },
+      {
+        "id": "bar-step-5",
+        "label": "Confirm order",
+        "type": "question",
+        "content": "Do you want me to create the IPA order now? (yes/no)"
+      },
+      {
+        "id": "bar-step-6",
+        "label": "Order decision",
+        "type": "decision",
+        "content": "If answer is 'yes', confirm the order. If 'no', end the flow."
+      },
+      {
+        "id": "bar-step-7",
+        "label": "End",
+        "type": "message",
+        "content": "Got it, thank you! Come back anytime to check your stock."
+      }
+    ]
+  },
+  {
+    "id": "flow-medical-orientation",
+    "name": "Medical Orientation Assistant",
+    "description": "Helps users understand which specialist they should see based on pain location.",
+    "steps": [
+      {
+        "id": "med-step-1",
+        "label": "Intro",
+        "type": "message",
+        "content": "Hello, I’ll help you understand which specialist you should consult."
+      },
+      {
+        "id": "med-step-2",
+        "label": "Ask pain area",
+        "type": "question",
+        "content": "Where do you feel pain? (head / chest / stomach / joints)"
+      },
+      {
+        "id": "med-step-3",
+        "label": "Orientation decision",
+        "type": "decision",
+        "content": "If head → neurologist, if chest → cardiologist, if stomach → gastroenterologist, if joints → rheumatologist."
+      },
+      {
+        "id": "med-step-4",
+        "label": "Head advice",
+        "type": "message",
+        "content": "Based on your symptoms, you should consider consulting a neurologist."
+      },
+      {
+        "id": "med-step-5",
+        "label": "Chest advice",
+        "type": "message",
+        "content": "Based on your symptoms, you should consider consulting a cardiologist."
+      },
+      {
+        "id": "med-step-6",
+        "label": "Stomach advice",
+        "type": "message",
+        "content": "Based on your symptoms, you should consider consulting a gastroenterologist."
+      },
+      {
+        "id": "med-step-7",
+        "label": "Joints advice",
+        "type": "message",
+        "content": "Based on your symptoms, you should consider consulting a rheumatologist."
+      },
+      {
+        "id": "med-step-8",
+        "label": "Outro",
+        "type": "message",
+        "content": "This is not a diagnosis. Please contact a healthcare professional for a proper evaluation."
+      }
+    ]
+  },
+  {
+    "id": "flow-ecommerce-returns",
+    "name": "E-commerce Return Assistant",
+    "description": "Guides a customer through the product return process.",
+    "steps": [
+      {
+        "id": "eco-step-1",
+        "label": "Greeting",
+        "type": "message",
+        "content": "Hi! I’ll help you with your product return."
+      },
+      {
+        "id": "eco-step-2",
+        "label": "Ask order number",
+        "type": "question",
+        "content": "Can you provide your order number?"
+      },
+      {
+        "id": "eco-step-3",
+        "label": "Ask return reason",
+        "type": "question",
+        "content": "What is the main reason for your return? (size / damaged / not as expected / other)"
+      },
+      {
+        "id": "eco-step-4",
+        "label": "Return decision",
+        "type": "decision",
+        "content": "If 'damaged', propose a replacement. Otherwise, propose a refund."
+      },
+      {
+        "id": "eco-step-5",
+        "label": "Explain next steps",
+        "type": "message",
+        "content": "You’ll receive a return label by email. Please pack the item securely and drop it at the nearest pickup point."
+      },
+      {
+        "id": "eco-step-6",
+        "label": "Confirm understanding",
+        "type": "question",
+        "content": "Do you have any questions about the return process?"
+      },
+      {
+        "id": "eco-step-7",
+        "label": "Closing",
+        "type": "message",
+        "content": "Thank you! We’ll process your return as soon as we receive the package."
+      }
+    ]
+  }
+]
