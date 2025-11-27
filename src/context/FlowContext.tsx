@@ -52,6 +52,7 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ACTIONS
   const updateStep = (flowId: string, stepId: string, patch: Partial<Step>) => {
+    // should be a call to the api too
     setFlows(prev =>
       prev.map(flow =>
         flow.id !== flowId

@@ -45,6 +45,7 @@ export const FlowDetailsPage = () => {
   const handleSave = () => {
     if (!selectedStepId) return;
     updateStep(flow.id, selectedStepId, editValues);
+    setSelectedStepId(null);
   };
 
   return (
