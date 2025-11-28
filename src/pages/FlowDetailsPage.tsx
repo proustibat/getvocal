@@ -2,8 +2,9 @@ import {Button, Card, Spinner} from "components/ui";
 import { Link, useParams } from "react-router-dom";
 import {PlusStroke, Trash3Stroke} from "@lineiconshq/free-icons";
 import type {Step, StepType} from "../features/flows/types.ts";
+import CreateStepForm from "../components/CreateStepForm.tsx";
 import { Lineicons } from "@lineiconshq/react-lineicons";
-import ModalContent from "../components/ModalContent.tsx";
+import ModalDialog from "../components/ui/ModalDialog.tsx";
 import ReactMarkdown from "react-markdown";
 import {createPortal} from "react-dom";
 import {useFlowsContext} from "../context/FlowContext";
@@ -208,9 +209,11 @@ export const FlowDetailsPage = () => {
         </Card>
       </div>
       {showModalCreateStep && createPortal(
-        <ModalContent
+        <ModalDialog
           onClose={() => setShowModalCreateStep(false)}
-          onSave={() => setShowModalCreateStep(false)} />,
+          onSave={() => setShowModalCreateStep(false)}>
+          <CreateStepForm />
+        </ModalDialog>,
         document.body
       )}
     </>
