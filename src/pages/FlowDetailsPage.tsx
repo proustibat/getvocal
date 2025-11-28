@@ -1,9 +1,11 @@
-import {Card, Spinner} from "components/ui";
+import {Button, Card, Spinner} from "components/ui";
 import { Link, useParams } from "react-router-dom";
+import {PlusStroke, Trash3Stroke} from "@lineiconshq/free-icons";
 import type {Step, StepType} from "../features/flows/types.ts";
 import { Lineicons } from "@lineiconshq/react-lineicons";
+import ModalContent from "../components/ModalContent.tsx";
 import ReactMarkdown from "react-markdown";
-import {Trash3Stroke} from "@lineiconshq/free-icons";
+import {createPortal} from "react-dom";
 import {useFlowsContext} from "../context/FlowContext";
 import { useState } from "react";
 
@@ -20,6 +22,8 @@ export const FlowDetailsPage = () => {
     type: "message",
     content: "",
   });
+
+  const [showModalCreateStep, setShowModalCreateStep] = useState(false);
 
   // when a step is clicked: load fields in the edit form
   const handleSelectStep = (stepId: string) => {
@@ -50,146 +54,165 @@ export const FlowDetailsPage = () => {
     setSelectedStepId(null);
   };
 
+  const handleCreateStep = () => {
+    console.log("CREATE");
+    setShowModalCreateStep(true);
+  };
+
   return (
-    <div className="p-8 space-y-8">
+    <>
+      <div className="p-8 space-y-8">
 
-      <Link to="/" className="text-blue-500 hover:underline">
-        ← Back to flows
-      </Link>
+        <Link to="/" className="text-blue-500 hover:underline">
+          ← Back to flows
+        </Link>
 
-      <div className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">{flow.name}</h1>
-        <span className="inline-block bg-slate-900 text-slate-50 text-xs px-3 py-1 rounded-full font-medium">
-          {flow.steps.length} steps
-        </span>
-      </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight">{flow.name}</h1>
+          <span className="inline-block bg-slate-900 text-slate-50 text-xs px-3 py-1 rounded-full font-medium">
+            {flow.steps.length} steps
+          </span>
+        </div>
 
-      <Card key="description" className="p-4 bg-gray-100">
-        <h2 className="font-bold mb-2">Description</h2>
-        <pre className="whitespace-pre-wrap text-sm text-slate-700">
-          {flow.description}
-        </pre>
-      </Card>
+        <Card key="description" className="p-4 bg-gray-100">
+          <h2 className="font-bold mb-2">Description</h2>
+          <pre className="whitespace-pre-wrap text-sm text-slate-700">
+            {flow.description}
+          </pre>
+        </Card>
 
-      {/* Steps + edit panel */}
-      <Card key="edit-panel" className="p-4 space-y-4">
-        <h2 className="font-bold">Steps</h2>
+        {/* Steps + edit panel */}
+        <Card key="edit-panel" className="p-4 space-y-4">
+          <div className="flex basis-full">
+            <h2 className="font-bold flex-auto">Steps</h2>
+            <Button variant="secondary" onClick={(e) => {
+              e.stopPropagation();
+              handleCreateStep();
+            }}><Lineicons icon={PlusStroke} size={20}/> Add a new step</Button>
+          </div>
 
-        <ul className="space-y-2">
-          {flow.steps.map((step, index) => (
-            <div key={step.id}>
-              <li
-                key={step.id}
-                onClick={() => handleSelectStep(step.id)}
-                className={`flex items-center justify-between border rounded-md px-4 py-2 shadow-sm cursor-pointer
+          <ul className="space-y-2">
+            {flow.steps.map((step, index) => (
+              <div key={step.id}>
+                <li
+                  key={step.id}
+                  onClick={() => handleSelectStep(step.id)}
+                  className={`flex items-center justify-between border rounded-md px-4 py-2 shadow-sm cursor-pointer
                 ${selectedStepId === step.id ? "bg-blue-50 border-blue-300" : "bg-white"}
               `}
-              >
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {index + 1}. {step.label}
-                  </span>
-                  <span className="text-xs text-slate-500 italic">{step.type}</span>
-                  <div className="prose prose-sm max-w-none mt-3">
-                    <ReactMarkdown
-                      components={{
-                        h1: ({children}) => (
-                          <h1 className="text-2xl font-bold mt-4 mb-2 text-indigo-700">
-                            {children}
-                          </h1>
-                        ),
-                        h2: ({children}) => (
-                          <h2 className="text-lg font-bold mt-4 mb-2 text-indigo-700">
-                            {children}
-                          </h2>
-                        ),
-                        li: ({children}) => (
-                          <li className="ml-6 list-disc text-gray-800">{children}</li>
-                        ),
-                      }}
-                    >
-                      {step.content}
-                    </ReactMarkdown>
-                  </div>
-                </div>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteStep(flow.id, step.id);
-                  }}
-                  className="ml-4 text-red-500 p-2 rounded-md hover:bg-red-50"
-                  aria-label="Delete step"
                 >
-                  <Lineicons icon={Trash3Stroke} size={24} strokeWidth={1.5} />
-                </button>
-                
-              </li>
-
-
-              {/*edit panel*/}
-              {selectedStepId === step.id && (
-                <div className="mt-6 border-t pt-6">
-                  <h3 className="font-semibold mb-4">Edit step</h3>
-
-                  <div className="space-y-4">
-
-                    {/* Label */}
-                    <div className="flex flex-col">
-                      <label className="text-sm font-medium mb-1">Label</label>
-                      <input
-                        type="text"
-                        value={editValues.label}
-                        onChange={(e) =>
-                          setEditValues({...editValues, label: e.target.value})
-                        }
-                        className="border rounded-md px-3 py-2"
-                      />
-                    </div>
-
-                    {/* Type */}
-                    <div className="flex flex-col">
-                      <label className="text-sm font-medium mb-1">Type</label>
-                      <select
-                        value={editValues.type}
-                        onChange={(e) =>
-                          setEditValues({...editValues, type: e.target.value as StepType})
-                        }
-                        className="border rounded-md px-3 py-2"
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">
+                      {index + 1}. {step.label}
+                    </span>
+                    <span className="text-xs text-slate-500 italic">{step.type}</span>
+                    <div className="prose prose-sm max-w-none mt-3">
+                      <ReactMarkdown
+                        components={{
+                          h1: ({children}) => (
+                            <h1 className="text-2xl font-bold mt-4 mb-2 text-indigo-700">
+                              {children}
+                            </h1>
+                          ),
+                          h2: ({children}) => (
+                            <h2 className="text-lg font-bold mt-4 mb-2 text-indigo-700">
+                              {children}
+                            </h2>
+                          ),
+                          li: ({children}) => (
+                            <li className="ml-6 list-disc text-gray-800">{children}</li>
+                          ),
+                        }}
                       >
-                        <option value="message">message</option>
-                        <option value="question">question</option>
-                        <option value="decision">decision</option>
-                      </select>
+                        {step.content}
+                      </ReactMarkdown>
                     </div>
-
-                    {/* Content */}
-                    <div className="flex flex-col">
-                      <label className="text-sm font-medium mb-1">Content</label>
-                      <textarea
-                        value={editValues.content}
-                        onChange={(e) =>
-                          setEditValues({...editValues, content: e.target.value})
-                        }
-                        rows={4}
-                        className="border rounded-md px-3 py-2"
-                      />
-                    </div>
-
-                    <button
-                      onClick={handleSave}
-                      className="bg-slate-900 text-white px-4 py-2 rounded-md hover:bg-slate-800"
-                    >
-                      Save
-                    </button>
-
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </ul>
-      </Card>
-    </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteStep(flow.id, step.id);
+                    }}
+                    className="ml-4 text-red-500 p-2 rounded-md hover:bg-red-50"
+                    aria-label="Delete step"
+                  >
+                    <Lineicons icon={Trash3Stroke} size={24} strokeWidth={1.5}/>
+                  </button>
+
+                </li>
+
+
+                {/*edit panel*/}
+                {selectedStepId === step.id && (
+                  <div className="mt-6 border-t pt-6">
+                    <h3 className="font-semibold mb-4">Edit step</h3>
+
+                    <div className="space-y-4">
+
+                      {/* Label */}
+                      <div className="flex flex-col">
+                        <label className="text-sm font-medium mb-1">Label</label>
+                        <input
+                          type="text"
+                          value={editValues.label}
+                          onChange={(e) =>
+                            setEditValues({...editValues, label: e.target.value})
+                          }
+                          className="border rounded-md px-3 py-2"
+                        />
+                      </div>
+
+                      {/* Type */}
+                      <div className="flex flex-col">
+                        <label className="text-sm font-medium mb-1">Type</label>
+                        <select
+                          value={editValues.type}
+                          onChange={(e) =>
+                            setEditValues({...editValues, type: e.target.value as StepType})
+                          }
+                          className="border rounded-md px-3 py-2"
+                        >
+                          <option value="message">message</option>
+                          <option value="question">question</option>
+                          <option value="decision">decision</option>
+                        </select>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex flex-col">
+                        <label className="text-sm font-medium mb-1">Content</label>
+                        <textarea
+                          value={editValues.content}
+                          onChange={(e) =>
+                            setEditValues({...editValues, content: e.target.value})
+                          }
+                          rows={4}
+                          className="border rounded-md px-3 py-2"
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleSave}
+                        className="bg-slate-900 text-white px-4 py-2 rounded-md hover:bg-slate-800"
+                      >
+                        Save
+                      </button>
+
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </ul>
+        </Card>
+      </div>
+      {showModalCreateStep && createPortal(
+        <ModalContent
+          onClose={() => setShowModalCreateStep(false)}
+          onSave={() => setShowModalCreateStep(false)} />,
+        document.body
+      )}
+    </>
   );
 };
