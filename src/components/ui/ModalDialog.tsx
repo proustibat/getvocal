@@ -1,11 +1,11 @@
-import {Button, Card} from "./ui";
+import {Button} from "./Button.tsx";
 
 type ModalContentProps = React.HTMLAttributes<HTMLDivElement> & {
   onClose: () => void;
   onSave: () => void;
 };
 
-export default function ModalContent({ onClose, onSave, className, ...props }: ModalContentProps) {
+export default function ModalDialog({ onClose, onSave, className, children, ...props }: ModalContentProps) {
   const classes = `
         shadow-[0_7px_29px_rgba(100,100,111,0.3)]
         bg-white
@@ -21,10 +21,7 @@ export default function ModalContent({ onClose, onSave, className, ...props }: M
     `;
   return (
     <div className={classes} {...props}>
-      <Card className="mb-2">
-        <h1 className="text-2xl uppercase">Add a new step</h1>
-        <div>Here should be the form</div>
-      </Card>
+      {children}
       <div className="flex justify-end gap-3">
         <Button variant="secondary" onClick={onClose}>Cancel</Button>
         <Button onClick={onSave}>Save</Button></div>
