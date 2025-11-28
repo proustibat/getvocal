@@ -1,13 +1,15 @@
 import {Card, Spinner} from "components/ui";
 import { Link, useParams } from "react-router-dom";
-import {useFlowsContext} from "../context/FlowContext";
-import ReactMarkdown from "react-markdown";
 import type {Step, StepType} from "../features/flows/types.ts";
+import { Lineicons } from "@lineiconshq/react-lineicons";
+import ReactMarkdown from "react-markdown";
+import {Trash3Stroke} from "@lineiconshq/free-icons";
+import {useFlowsContext} from "../context/FlowContext";
 import { useState } from "react";
 
 export const FlowDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { updateStep, getFlowById, isLoading } = useFlowsContext();
+  const { updateStep, getFlowById, isLoading, deleteStep } = useFlowsContext();
 
   const flow = getFlowById(id);
 
@@ -111,8 +113,21 @@ export const FlowDetailsPage = () => {
                   </div>
                 </div>
 
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteStep(flow.id, step.id);
+                  }}
+                  className="ml-4 text-red-500 p-2 rounded-md hover:bg-red-50"
+                  aria-label="Delete step"
+                >
+                  <Lineicons icon={Trash3Stroke} size={24} strokeWidth={1.5} />
+                </button>
+                
               </li>
 
+
+              {/*edit panel*/}
               {selectedStepId === step.id && (
                 <div className="mt-6 border-t pt-6">
                   <h3 className="font-semibold mb-4">Edit step</h3>

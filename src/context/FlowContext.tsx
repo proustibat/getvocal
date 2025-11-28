@@ -12,6 +12,10 @@ interface FlowContextValue {
     stepId: string,
     patch: Partial<Step>,
   ) => void;
+  deleteStep: (
+    flowId: string,
+    stepId: string,
+  ) => void;
 }
 
 const FlowContext = createContext<FlowContextValue | null>(null);
@@ -67,6 +71,20 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
+  const deleteStep = (flowId: string, stepId: string) => {
+    setFlows(prev =>
+      prev.map(flow =>
+        flow.id !== flowId
+          ? flow
+          : {
+            ...flow,
+            steps: flow.steps.filter(s => s.id !== stepId),
+          }
+      )
+    );
+  };
+
+
   const getFlowById = (flowId: string | undefined) =>
     flows.find(f => f.id === flowId);
 
@@ -75,6 +93,7 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
       flows,
       isLoading,
       updateStep,
+      deleteStep,
       getFlowById
     }}>
       {children}
