@@ -1,99 +1,65 @@
 import {Card} from "./ui";
-import { useForm } from "react-hook-form";
+import FormInput from "./ui/FormInput.tsx";
+import FormLabel from "./ui/FormLabel.tsx";
+import FormSelect from "./ui/FormSelect.tsx";
+import FormTextarea from "./ui/FormTextarea.tsx";
+import {useForm} from "react-hook-form";
 
 type CreateStepFormProps = {
   formId: string
   onSaved: ()=>void;
 };
 
+type FormValues = {
+  label: string;
+  type: "question" | "message" | "decision";
+  content: string;
+};
+
 const CreateStepForm = ({formId, onSaved}: CreateStepFormProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
-  } = useForm({
-    defaultValues: {
-      label: "",
-      type: "",
-      content: ""
-    }
-  });
-    
+    formState: {errors}
+  } = useForm<FormValues>();
+
+  const handleSave = (data: FormValues) => {
+    alert(JSON.stringify(data));
+    onSaved();
+  };
+
   return (
     <Card className="mb-2">
       <h1 className="text-2xl uppercase mb-4">Add a new step</h1>
       <form
         id={formId}
-        onSubmit={handleSubmit((data) => {
-          alert(JSON.stringify(data));
-          onSaved();
-        })}
+        onSubmit={handleSubmit(handleSave)}
         className="px-8 pt-6 pb-8 mb-4"
       >
         <div className="mb-8">
-          <label
-            htmlFor="label"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Label
-          </label>
-          <input
-            id="label"
-            type="text"
-            {...register(
-              "label",
-              {required: true}
-            )}
-            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline 
-                ${errors.label && "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"}`
-            }
-          />
-          {errors.label && <p className="text-red-500 text-xs italic">Please choose a label for the step</p>}
+          <FormLabel text="Label" id="label" />
+          <FormInput id="label" register={register} required="Please enter a label" error={errors.label?.message} />
         </div>
 
         <div className="mb-8">
-          <label
-            htmlFor="type"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Type
-          </label>
-          <select
+          <FormLabel text="Type" id="type" />
+          <FormSelect
             id="type"
-            {...register(
-              "type",
-              {required: true}
-            )}
-            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline 
-                ${errors.type && "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"}`
-            }
-          >
-            <option value="" disabled>Choose a type</option>
-            <option value="message">Message</option>
-            <option value="question">Question</option>
-            <option value="decision">Decision</option>
-          </select>
-          {errors.type && <p className="text-red-500 text-xs italic">Please choose a type for your step</p>}
+            options={[
+              {value: "message", text: "Message"},
+              {value: "question", text: "Question"},
+              {value: "decision", text: "Decision"}
+            ]}
+            register={register}
+            required="Please select a type"
+            error={errors.type?.message}
+            placeholder="Choose a type"
+          />
         </div>
 
         <div className="mb-8">
-          <label
-            htmlFor="content"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Content
-          </label>
-          <textarea
-            id="content"
-            {...register(
-              "content",
-              {required: true}
-            )}
-            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-[4px]
-            ${errors.content && "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"}`
-            }
-          />
-          {errors.content && <p className="text-red-500 text-xs italic">Please define a content</p>}
+          <FormLabel text="Content" id="content" />
+          <FormTextarea id="content" register={register} required="Please define a content for your step" error={errors.content?.message}/>
         </div>
       </form>
     </Card>
