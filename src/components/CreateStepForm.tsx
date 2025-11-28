@@ -58,18 +58,21 @@ const CreateStepForm = ({formId, onSaved}: CreateStepFormProps) => {
           >
             Type
           </label>
-          <input
+          <select
             id="type"
-            type="text"
-            placeholder={`"question" / "message" / "decision"`}
             {...register(
               "type",
               {required: true}
             )}
             className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline 
-            ${errors.type && "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"}`
+                ${errors.type && "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"}`
             }
-          />
+          >
+            <option value="" disabled>Choose a type</option>
+            <option value="message">Message</option>
+            <option value="question">Question</option>
+            <option value="decision">Decision</option>
+          </select>
           {errors.type && <p className="text-red-500 text-xs italic">Please choose a type for your step</p>}
         </div>
 
