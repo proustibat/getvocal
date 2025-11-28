@@ -1,6 +1,7 @@
 import type {Flow, Step} from "../features/flows/types.ts";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import {useFlowsQuery} from "../features/flows/useFlowsQuery.ts";
+import {nanoid} from "nanoid";
 
 
 interface FlowContextValue {
@@ -15,6 +16,10 @@ interface FlowContextValue {
   deleteStep: (
     flowId: string,
     stepId: string,
+  ) => void;
+  addStep: (
+    flowId: string,
+    data: Omit<Step, 'id'>,
   ) => void;
 }
 
@@ -56,7 +61,6 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ACTIONS
   const updateStep = (flowId: string, stepId: string, patch: Partial<Step>) => {
-    // should be a call to the api too
     setFlows(prev =>
       prev.map(flow =>
         flow.id !== flowId
@@ -84,6 +88,26 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
     );
   };
 
+  const addStep = (flowId: string, data: Omit<Step, 'id'>) => {
+    const id = nanoid();
+
+    const newStep: Step = {
+      id,
+      ...data,
+    };
+
+    setFlows(prev =>
+      prev.map(flow =>
+        flow.id !== flowId
+          ? flow
+          : {
+            ...flow,
+            steps: [...flow.steps, newStep],
+          }
+      )
+    );
+  };
+
 
   const getFlowById = (flowId: string | undefined) =>
     flows.find(f => f.id === flowId);
@@ -94,6 +118,7 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
       isLoading,
       updateStep,
       deleteStep,
+      addStep,
       getFlowById
     }}>
       {children}

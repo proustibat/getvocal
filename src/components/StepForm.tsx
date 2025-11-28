@@ -5,35 +5,31 @@ import FormSelect from "./ui/FormSelect.tsx";
 import FormTextarea from "./ui/FormTextarea.tsx";
 import {useForm} from "react-hook-form";
 
-type CreateStepFormProps = {
+type StepFormProps = {
   formId: string
-  onSaved: ()=>void;
+  onSave: (data: FormValues)=>void;
+  defaultValues?: FormValues;
 };
 
-type FormValues = {
+export type FormValues = {
   label: string;
   type: "question" | "message" | "decision";
   content: string;
 };
 
-const CreateStepForm = ({formId, onSaved}: CreateStepFormProps) => {
+const StepForm = ({formId, onSave, defaultValues}: StepFormProps) => {
   const {
     register,
     handleSubmit,
     formState: {errors}
-  } = useForm<FormValues>();
-
-  const handleSave = (data: FormValues) => {
-    alert(JSON.stringify(data));
-    onSaved();
-  };
+  } = useForm<FormValues>({defaultValues});
 
   return (
     <Card className="mb-2">
       <h1 className="text-2xl uppercase mb-4">Add a new step</h1>
       <form
         id={formId}
-        onSubmit={handleSubmit(handleSave)}
+        onSubmit={handleSubmit(onSave)}
         className="px-8 pt-6 pb-8 mb-4"
       >
         <div className="mb-8">
@@ -67,4 +63,4 @@ const CreateStepForm = ({formId, onSaved}: CreateStepFormProps) => {
 
 };
 
-export default CreateStepForm;
+export default StepForm;

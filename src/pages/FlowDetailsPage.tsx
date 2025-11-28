@@ -1,8 +1,7 @@
 import {Button, Card, Spinner} from "components/ui";
 import { Link, useParams } from "react-router-dom";
 import {PlusStroke, Trash3Stroke} from "@lineiconshq/free-icons";
-import type {Step, StepType} from "../features/flows/types.ts";
-import CreateStepForm from "../components/CreateStepForm.tsx";
+import StepForm, {type FormValues} from "../components/StepForm.tsx";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import ModalDialog from "../components/ui/ModalDialog.tsx";
 import ReactMarkdown from "react-markdown";
@@ -10,19 +9,15 @@ import {createPortal} from "react-dom";
 import {useFlowsContext} from "../context/FlowContext";
 import { useState } from "react";
 
+
 export const FlowDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { updateStep, getFlowById, isLoading, deleteStep } = useFlowsContext();
+  const { updateStep, getFlowById, isLoading, deleteStep, addStep } = useFlowsContext();
 
   const flow = getFlowById(id);
 
   const [selectedStepId, setSelectedStepId] = useState<string | null>(null);
 
-  const [editValues, setEditValues] = useState<Pick<Step, "label" | "type" | "content">>({
-    label: "",
-    type: "message",
-    content: "",
-  });
 
   const [showModalCreateStep, setShowModalCreateStep] = useState(false);
 
@@ -31,12 +26,13 @@ export const FlowDetailsPage = () => {
     const step = flow?.steps.find((s) => s.id === stepId);
     if (!step) return;
 
+    // toggle to close if already open
+    if(selectedStepId === step.id) {
+      setSelectedStepId(null);
+      return;
+    }
+
     setSelectedStepId(stepId);
-    setEditValues({
-      label: step.label,
-      type: step.type,
-      content: step.content,
-    });
   };
 
   if (isLoading) {
@@ -49,15 +45,17 @@ export const FlowDetailsPage = () => {
 
   if (!flow) return <div>Flow not found</div>;
 
-  const handleSave = () => {
-    if (!selectedStepId) return;
-    updateStep(flow.id, selectedStepId, editValues);
-    setSelectedStepId(null);
+
+  const handleCreateForm = (data: FormValues) => {
+    addStep(flow.id, data);
+    setShowModalCreateStep(false);
   };
 
-  const handleCreateStep = () => {
-    console.log("CREATE");
-    setShowModalCreateStep(true);
+
+  const handleEditForm = (data: FormValues) => {
+    if (!selectedStepId) return;
+    updateStep(flow.id, selectedStepId, data);
+    setSelectedStepId(null);
   };
 
   return (
@@ -74,7 +72,6 @@ export const FlowDetailsPage = () => {
             {flow.steps.length} steps
           </span>
         </div>
-
         <Card key="description" className="p-4 bg-gray-100">
           <h2 className="font-bold mb-2">Description</h2>
           <pre className="whitespace-pre-wrap text-sm text-slate-700">
@@ -88,7 +85,7 @@ export const FlowDetailsPage = () => {
             <h2 className="font-bold flex-auto">Steps</h2>
             <Button variant="secondary" onClick={(e) => {
               e.stopPropagation();
-              handleCreateStep();
+              setShowModalCreateStep(true);
             }}><Lineicons icon={PlusStroke} size={20}/> Add a new step</Button>
           </div>
 
@@ -145,63 +142,20 @@ export const FlowDetailsPage = () => {
 
 
                 {/*edit panel*/}
-                {selectedStepId === step.id && (
-                  <div className="mt-6 border-t pt-6">
-                    <h3 className="font-semibold mb-4">Edit step</h3>
-
-                    <div className="space-y-4">
-
-                      {/* Label */}
-                      <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-1">Label</label>
-                        <input
-                          type="text"
-                          value={editValues.label}
-                          onChange={(e) =>
-                            setEditValues({...editValues, label: e.target.value})
-                          }
-                          className="border rounded-md px-3 py-2"
-                        />
-                      </div>
-
-                      {/* Type */}
-                      <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-1">Type</label>
-                        <select
-                          value={editValues.type}
-                          onChange={(e) =>
-                            setEditValues({...editValues, type: e.target.value as StepType})
-                          }
-                          className="border rounded-md px-3 py-2"
-                        >
-                          <option value="message">message</option>
-                          <option value="question">question</option>
-                          <option value="decision">decision</option>
-                        </select>
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex flex-col">
-                        <label className="text-sm font-medium mb-1">Content</label>
-                        <textarea
-                          value={editValues.content}
-                          onChange={(e) =>
-                            setEditValues({...editValues, content: e.target.value})
-                          }
-                          rows={4}
-                          className="border rounded-md px-3 py-2"
-                        />
-                      </div>
-
-                      <button
-                        onClick={handleSave}
-                        className="bg-slate-900 text-white px-4 py-2 rounded-md hover:bg-slate-800"
-                      >
-                        Save
-                      </button>
-
-                    </div>
-                  </div>
+                {selectedStepId && selectedStepId === step.id && (
+                  <Card className="mt-6 pt-6">
+                    <StepForm
+                      formId="update-step-form"
+                      onSave={handleEditForm}
+                      defaultValues={step}
+                    />
+                    <Button
+                      type="submit"
+                      form="update-step-form"
+                    >
+                      Save
+                    </Button>
+                  </Card>
                 )}
               </div>
             ))}
@@ -209,13 +163,8 @@ export const FlowDetailsPage = () => {
         </Card>
       </div>
       {showModalCreateStep && createPortal(
-
-        <ModalDialog
-          onClose={() => setShowModalCreateStep(false)}
-          onSave={() => {}}
-          formId="create-step-form"
-        >
-          <CreateStepForm formId="create-step-form" onSaved={() => setShowModalCreateStep(false)} />
+        <ModalDialog formId="create-step-form" onClose={() => setShowModalCreateStep(false)}>
+          <StepForm formId="create-step-form" onSave={handleCreateForm} />
         </ModalDialog>,
         document.body
       )}

@@ -2,10 +2,11 @@ import {Button} from "./Button.tsx";
 import {useEffect} from "react";
 
 type ModalContentProps = React.HTMLAttributes<HTMLDivElement> & {
-  onClose: () => void;
-  onSave: () => void;
+  onClose?: () => void;
+  onSave?: () => void;
   formId?: string | null;
 };
+
 export default function ModalDialog({ onClose, onSave, className, children, formId = null, ...props }: ModalContentProps) {
   const classes = `
         shadow-[0_7px_29px_rgba(100,100,111,0.3)]
