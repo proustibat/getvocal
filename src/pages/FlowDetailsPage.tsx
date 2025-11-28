@@ -209,10 +209,13 @@ export const FlowDetailsPage = () => {
         </Card>
       </div>
       {showModalCreateStep && createPortal(
+
         <ModalDialog
           onClose={() => setShowModalCreateStep(false)}
-          onSave={() => setShowModalCreateStep(false)}>
-          <CreateStepForm />
+          onSave={() => {}}
+          formId="create-step-form"
+        >
+          <CreateStepForm formId="create-step-form" onSaved={() => setShowModalCreateStep(false)} />
         </ModalDialog>,
         document.body
       )}
