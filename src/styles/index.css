@@ -7,8 +7,3 @@
         @apply bg-slate-100 text-slate-900 antialiased;
     }
 }
-
-:root {
-    --modal-margin: 4em;
-    --modal-width: calc(100% - var(--modal-margin));
-}
