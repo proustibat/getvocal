@@ -23,13 +23,13 @@ const VARIANT_CLASSES: Record<NonNullable<ButtonProps['variant']>, string> = {
 export const Button = ({ variant, className = '', ...props }: ButtonProps) => {
   const classes = `
         inline-flex items-center justify-center gap-2
-        px-4 py-2 rounded-md text-sm font-medium
+        px-4 py-2 rounded text-sm font-medium
         transition-all duration-[450ms] ease-out
         outline-none
         focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-100
         cursor-pointer
-        ${props.disabled && "disabled:bg-gray-300"}
-        ${variant && VARIANT_CLASSES[variant]} 
+        ${props.disabled ? "disabled:bg-gray-300" : ""}
+        ${variant ? VARIANT_CLASSES[variant] : ""} 
         ${className}
     `;
   return <button type="button" disabled={props.disabled} className={classes} {...props} />;

@@ -31,28 +31,28 @@ const StepCardItem = ({step, index, onEdit, onDelete}: StepCardItemProps) => {
               </p>
             </div>
 
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 items-center">
               <ButtonIcon
                 icon={Pencil1Stroke}
-                iconSize={24}
+                iconSize={35}
                 buttonSize={40}
                 className="
                     border border-gray-200 hover:border-gray-500
                     bg-white hover:bg-gray-100
                 "
-                iconClassName="text-gray-800"
+                iconClassName="text-gray-800 p-1"
                 aria-label="Edit step"
                 onClick={onEdit}
               />
               <ButtonIcon
                 icon={Trash3Stroke}
-                iconSize={24}
+                iconSize={35}
                 buttonSize={40}
                 className="
                     border border-red-200 hover:border-red-500
                     bg-white hover:bg-red-100
                 "
-                iconClassName="text-red-500"
+                iconClassName="text-red-500 p-1"
                 aria-label="Delete step"
                 onClick={onDelete}
               />
@@ -82,6 +82,9 @@ const StepCardItem = ({step, index, onEdit, onDelete}: StepCardItemProps) => {
                 ),
                 li: ({children}) => (
                   <li className="ml-6 list-disc text-gray-400 list my-1 list">{children}</li>
+                ),
+                pre: ({children}) => (
+                  <pre className="text-wrap wrap-anywhere">{children}</pre>
                 ),
               }}
             >

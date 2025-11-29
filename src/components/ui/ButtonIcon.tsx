@@ -23,26 +23,29 @@ type ButtonIconProps = ButtonProps & {
 
 const ButtonIcon = ({icon, isIconFilled=false, iconSize, buttonSize, className, iconClassName, ...props}: ButtonIconProps) => {
   return (
-    <Button
-      {...props}
-      className={`
-        rounded-[${buttonSize}px]
-        p-0 m-0
-        h-[${buttonSize}px] w-[${buttonSize}px]
-        flex justify-center items-center
-        ${className}
-      `}
-    >
-      <Lineicons
+    <div>
+      <Button
+        {...props}
         className={`
-          absolute 
-          rounded-full 
-          ${iconClassName} 
-          ${isIconFilled ? "fill-current" : "fill-transparent"}
-        `}
-        icon={icon} size={iconSize} strokeWidth={1.5}
-      />
-    </Button>
+              size-[${buttonSize}px]
+              rounded-full
+              force-reset-spacing
+              ${className}
+            `}
+      >
+        <Lineicons
+          className={`
+                ${iconClassName} 
+                ${isIconFilled ? "fill-current" : "fill-transparent"}
+                size-[${iconSize}px]
+              `}
+          icon={icon}
+          size={iconSize}
+          strokeWidth={1.5}
+        />
+      </Button>
+    </div>
+
   );
 
 };

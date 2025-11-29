@@ -38,4 +38,11 @@
     .animate-backdrop {
         animation: backdrop-open 200ms ease-out forwards;
     }
+    .wrap-anywhere {
+        overflow-wrap: anywhere;
+    }
+    .force-reset-spacing {
+        padding: 0!important;
+        margin: 0!important;
+    }
 }
