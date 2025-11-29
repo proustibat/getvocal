@@ -1,7 +1,7 @@
 import type {Flow, Step} from "../features/flows/types.ts";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import {useFlowsQuery} from "../features/flows/useFlowsQuery.ts";
 import {nanoid} from "nanoid";
+import {useFlowsQuery} from "../features/flows/useFlowsQuery.ts";
 
 
 interface FlowContextValue {
@@ -61,6 +61,7 @@ export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
 
   // ACTIONS
   const updateStep = (flowId: string, stepId: string, patch: Partial<Step>) => {
+    console.log("CONTEXT UPDATE STEP");
     setFlows(prev =>
       prev.map(flow =>
         flow.id !== flowId

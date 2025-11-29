@@ -9,6 +9,7 @@ type StepFormProps = {
   formId: string
   onSave: (data: FormValues)=>void;
   defaultValues?: FormValues;
+  title?: string
 };
 
 export type FormValues = {
@@ -17,7 +18,7 @@ export type FormValues = {
   content: string;
 };
 
-const StepForm = ({formId, onSave, defaultValues}: StepFormProps) => {
+const StepForm = ({formId, onSave, defaultValues, title}: StepFormProps) => {
   const {
     register,
     handleSubmit,
@@ -26,7 +27,7 @@ const StepForm = ({formId, onSave, defaultValues}: StepFormProps) => {
 
   return (
     <Card className="mb-2">
-      <h1 className="text-2xl uppercase mb-4">Add a new step</h1>
+      {title && <h1 className="text-2xl tracking-tight uppercase mb-4 text-center border-solid border-b-2 w-fit m-auto pb-4 pt-2">{title}</h1>}
       <form
         id={formId}
         onSubmit={handleSubmit(onSave)}

@@ -1,8 +1,9 @@
-#todo
+# todo
 
 - writing this readme properly
-- missing features: deleting steps, adding a new step, reordering steps
+- add an alert before deleting when button is clicked
+- reordering steps
 - filter flows with search term
-- improve edit/add form: using react-hook form? modal?
+- improve modal: close it when clicking outside the container or when entering escape
 - try @yflow/react to improve steps display
 - add unit tests with Vitest & React Testing Library

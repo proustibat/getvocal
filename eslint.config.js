@@ -28,6 +28,13 @@ export default defineConfig([
       '@stylistic/semi': 'error',
       'no-mixed-spaces-and-tabs': 'error',
       '@stylistic/indent': ['error', 2],
+      "@typescript-eslint/no-unused-expressions": [
+        "error",
+        {
+          allowTernary: true,
+          allowShortCircuit: true
+        }
+      ],
     },
   },
 ])
