@@ -22,7 +22,7 @@ A small prototype for the GetVocal.ai flow builder take-home. It lets you browse
    ```
 
 ## Development
-- Start the Vite dev server:
+### Start the Vite dev server:
   ```bash
   npm run dev
   ```
@@ -45,7 +45,7 @@ A small prototype for the GetVocal.ai flow builder take-home. It lets you browse
 - **API simulation**: `src/features/flows/api.ts` returns mocked flow data from `mocks/flows.json` and waits briefly to mimic network latency, while `useFlowsQuery` wraps that call in React Query to expose loading/error states as if it were a real server round trip.
 - **Persistence and resets**: `FlowProvider` hydrates from `localStorage` first, then seeds with the mocked flows on initial fetch. Any edits/creates/deletes write back to `localStorage`, so clearing `localStorage` restores the original mocked flows if you want a clean slate.
 - **Forms**: `react-hook-form` powers the step creation/edit form components for minimal boilerplate and built-in validation messaging.
-- 
+
 ## Tradeoffs and next steps
 - **Step ordering**: Reordering is not implemented yet; the next step is to add drag-and-drop or up/down controls (e.g., via `@dnd-kit`) and persist the new order.
 - **Deletions**: Steps delete immediately with no confirmation; a lightweight alert or modal should gate the action.
@@ -54,3 +54,5 @@ A small prototype for the GetVocal.ai flow builder take-home. It lets you browse
 - **Validation**: Only `react-hook-form` required rules are active; wiring Zod schemas would tighten validation and error messaging.
 - **Visualization**: The flow is linear; experimenting with `@xyflow/react` could make relationships clearer.
 - **Tests**: Vitest + React Testing Library are not configured yet; bringing them in would let me cover the flows context, form behaviors, and critical UI paths.
+- **Error management**: add a custom 404, catch /flows/<bad-id> and add a custom ErrorBoundary or errorElement on routes
+- **UX improvement**: allow to collapse content onna step because when it'stoo long it's not a good experience to see every steps

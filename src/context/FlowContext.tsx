@@ -28,7 +28,7 @@ const FlowContext = createContext<FlowContextValue | null>(null);
 
 export const FlowProvider = ({ children }: { children: React.ReactNode }) => {
   // fake fetch
-  const { data, isLoading: isFetching } = useFlowsQuery();
+  const { data, isLoading: isFetching} = useFlowsQuery();
 
   // init from localStorage
   const [flows, setFlows] = useState<Flow[]>(() => {

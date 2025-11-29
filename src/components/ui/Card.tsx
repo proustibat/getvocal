@@ -9,9 +9,9 @@ export const Card = ({ title, children, className = '', ...props }: CardProps) =
       {...props}
     >
       {title && (
-        <h3 className="text-sm font-semibold text-slate-900 mb-3 tracking-tight">
-          {title}
-        </h3>
+        <h2 className="text-xl font-semibold text-slate-900 mb-3 uppercase">
+          ▶ {title}
+        </h2>
       )}
       {children}
     </div>

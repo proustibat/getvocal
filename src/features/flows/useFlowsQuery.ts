@@ -6,6 +6,6 @@ export const useFlowsQuery = () => {
   return useQuery<Flow[]>({
     queryKey: ["flows"],
     queryFn: fetchFlows,
-    staleTime: 1000
+    staleTime: 1000,
   });
 };
