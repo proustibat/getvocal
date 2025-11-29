@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import NumberItemsTag from "../components/ui/NumberItemsTag.tsx";
 import {useFlowsContext} from "../context/FlowContext.tsx";
 
-
 export const FlowsPage = () => {
   const { flows, isLoading } = useFlowsContext();
 
@@ -75,25 +74,19 @@ export const FlowsPage = () => {
           </p>
         </header>
 
-        <section className="space-y-3">
+        {/* filters */}
+        <section className="flex flex-row items-center gap-2 flex-wrap">
           <Button
-            type="button"
             variant={favoritesOnly ? "primary" : "secondary"}
             onClick={() => setFavoritesOnly((prev) => !prev)}
             aria-pressed={favoritesOnly}
           >
-            {favoritesOnly ? "Showing favorites" : "Favorites only"}
+            {favoritesOnly ? "Clear favorites filter" : "Show only favorites"}
           </Button>
-
-          <div className="flex flex-row items-center gap-2 text-xs text-slate-500">
-            <NumberItemsTag value={filteredFlows.length} singularWord={`flow shown / ${flows?.length} total`} pluralWord={`flows shown / ${flows?.length} total`}/>
-            {favoritesOnly && (
-              <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-700">
-                Favorites filter active
-              </span>
-            )}
-          </div>
         </section>
+        <div className="flex justify-center">
+          <NumberItemsTag value={filteredFlows.length} singularWord={`flow shown / ${flows?.length} total`} pluralWord={`flows shown / ${flows?.length} total`}/>
+        </div>
 
         <section>
           {(!flows || flows.length === 0)

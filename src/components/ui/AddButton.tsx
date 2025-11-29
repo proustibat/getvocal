@@ -5,7 +5,7 @@ import {PlusStroke} from "@lineiconshq/free-icons";
 
 const AddButton = ({onClick, children, ...props}: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
-    <Button variant="secondary" onClick={onClick} {...props}><Lineicons icon={PlusStroke} size={20}/>{children}</Button>
+    <Button variant="primary" onClick={onClick} {...props}><Lineicons icon={PlusStroke} size={20}/>{children}</Button>
   );
 };
 

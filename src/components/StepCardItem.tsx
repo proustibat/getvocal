@@ -1,5 +1,5 @@
 import {Pencil1Stroke, Trash3Stroke} from "@lineiconshq/free-icons";
-import {Lineicons} from "@lineiconshq/react-lineicons";
+import ButtonIcon from "./ui/ButtonIcon.tsx";
 import ReactMarkdown from "react-markdown";
 import type {Step} from "../features/flows/types.ts";
 
@@ -15,7 +15,7 @@ const StepCardItem = ({step, index, onEdit, onDelete}: StepCardItemProps) => {
     <div key={step.id}>
       <li
         key={step.id}
-        className="flex items-center justify-between border rounded-md px-4 py-2 shadow-sm cursor-pointer bg-white"
+        className="flex items-center justify-between border rounded-md px-4 py-2 shadow-sm bg-white"
       >
 
         <div className="w-full text-gray-600">
@@ -32,21 +32,30 @@ const StepCardItem = ({step, index, onEdit, onDelete}: StepCardItemProps) => {
             </div>
 
             <div className="flex flex-row gap-2">
-              <button
-                onClick={onEdit}
-                className="text-slate-500 p-2 rounded-md hover:bg-slate-50"
+              <ButtonIcon
+                icon={Pencil1Stroke}
+                iconSize={24}
+                buttonSize={40}
+                className="
+                    border border-gray-200 hover:border-gray-500
+                    bg-white hover:bg-gray-100
+                "
+                iconClassName="text-gray-800"
                 aria-label="Edit step"
-              >
-                <Lineicons icon={Pencil1Stroke} size={24} strokeWidth={1.5}/>
-              </button>
-
-              <button
-                onClick={onDelete}
-                className="text-red-500 p-2 rounded-md hover:bg-red-50"
+                onClick={onEdit}
+              />
+              <ButtonIcon
+                icon={Trash3Stroke}
+                iconSize={24}
+                buttonSize={40}
+                className="
+                    border border-red-200 hover:border-red-500
+                    bg-white hover:bg-red-100
+                "
+                iconClassName="text-red-500"
                 aria-label="Delete step"
-              >
-                <Lineicons icon={Trash3Stroke} size={24} strokeWidth={1.5}/>
-              </button>
+                onClick={onDelete}
+              />
             </div>
           </div>
 

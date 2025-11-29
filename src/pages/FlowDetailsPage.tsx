@@ -52,7 +52,7 @@ export const FlowDetailsPage = () => {
     <>
       <div className="p-8 space-y-8">
 
-        <Link to="/" className="text-blue-500 hover:underline">
+        <Link to="/" className="text-blue-500 hover:underline cursor-pointer">
           ← Back to flows
         </Link>
 

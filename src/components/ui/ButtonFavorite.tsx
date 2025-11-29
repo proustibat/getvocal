@@ -1,5 +1,4 @@
-import {Button} from "./Button.tsx";
-import {Lineicons} from "@lineiconshq/react-lineicons";
+import ButtonIcon from "./ButtonIcon.tsx";
 import {StarFatStroke} from "@lineiconshq/free-icons";
 
 type ButtonFavoriteProps = {
@@ -8,18 +7,24 @@ type ButtonFavoriteProps = {
 };
 const ButtonFavorite = ({onClick, isSelected}: ButtonFavoriteProps) => {
   return (
-    <Button
-      type="button"
+    <ButtonIcon
+      icon={StarFatStroke}
+      iconSize={32}
+      buttonSize={32}
+      className="
+        border border-transparent
+        hover:border hover:border-amber-500
+        bg-transparent hover:bg-transparent
+      "
+      iconClassName="text-amber-500 p-1 transition-colors duration-300 ease-out"
+      isIconFilled={isSelected}
       aria-label={isSelected? "Remove from favorites" : "Add to favorites"}
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
         onClick();
       }}
-      className="rounded-[16px] focus:outline-none p-0 m-0 h-[32px] w-[32px] flex justify-center items-center bg-transparent hover:bg-transparent"
-    >
-      <Lineicons className="text-amber-500 absolute" icon={StarFatStroke} size={24} strokeWidth={1.5} fill={isSelected? "currentColor" : "none"} />
-    </Button>
+    />
   );
 };
 
