@@ -10,7 +10,7 @@ type ModalContentProps = React.HTMLAttributes<HTMLDivElement> & {
 export default function ModalDialog({ onClose, onSave, className, children, formId = null, ...props }: ModalContentProps) {
   const classes = `
         shadow-[0_7px_29px_rgba(100,100,111,0.3)]
-        absolute
+        fixed
         size-full
         top-0
         bottom-0 
@@ -25,6 +25,8 @@ export default function ModalDialog({ onClose, onSave, className, children, form
         flex-col
         justify-center
         items-center
+        inset-0
+        animate-backdrop
         ${className}
     `;
   useEffect(() => {
@@ -40,14 +42,18 @@ export default function ModalDialog({ onClose, onSave, className, children, form
   }, []);
   return (
     <div className={classes} {...props}>
-      <div className="overflow-scroll max-w-3xl w-full">
+      <div className="
+        overflow-scroll max-w-3xl w-full
+        bg-white rounded-lg p-6
+        animate-modal-open
+      ">
         {children}
         <div className="flex justify-center gap-3">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
           <Button
             onClick={onSave}
             type={formId ? 'submit' : 'button'}
-            {...(formId && ({ form: formId }))}
+            {...(formId && ({form: formId}))}
           >
             Save
           </Button>
