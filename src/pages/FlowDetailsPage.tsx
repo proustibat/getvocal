@@ -1,10 +1,11 @@
 import {Button, Card, Spinner} from "components/ui";
 import { Link, useParams } from "react-router-dom";
-import {PlusStroke, Trash3Stroke} from "@lineiconshq/free-icons";
+import {Pencil1Stroke, PlusStroke, Trash3Stroke} from "@lineiconshq/free-icons";
 import StepForm, {type FormValues} from "../components/StepForm.tsx";
 import { Lineicons } from "@lineiconshq/react-lineicons";
 import ModalDialog from "../components/ui/ModalDialog.tsx";
 import ReactMarkdown from "react-markdown";
+import {type Step} from "features/flows/types.ts";
 import {createPortal} from "react-dom";
 import {useFlowsContext} from "../context/FlowContext";
 import { useState } from "react";
@@ -16,24 +17,8 @@ export const FlowDetailsPage = () => {
 
   const flow = getFlowById(id);
 
-  const [selectedStepId, setSelectedStepId] = useState<string | null>(null);
-
-
+  const [editingStep, setEditingStep] = useState<Step|null>(null);
   const [showModalCreateStep, setShowModalCreateStep] = useState(false);
-
-  // when a step is clicked: load fields in the edit form
-  const handleSelectStep = (stepId: string) => {
-    const step = flow?.steps.find((s) => s.id === stepId);
-    if (!step) return;
-
-    // toggle to close if already open
-    if(selectedStepId === step.id) {
-      setSelectedStepId(null);
-      return;
-    }
-
-    setSelectedStepId(stepId);
-  };
 
   if (isLoading) {
     return (
@@ -45,17 +30,15 @@ export const FlowDetailsPage = () => {
 
   if (!flow) return <div>Flow not found</div>;
 
-
   const handleCreateForm = (data: FormValues) => {
     addStep(flow.id, data);
     setShowModalCreateStep(false);
   };
 
-
   const handleEditForm = (data: FormValues) => {
-    if (!selectedStepId) return;
-    updateStep(flow.id, selectedStepId, data);
-    setSelectedStepId(null);
+    if (!editingStep) return;
+    updateStep(flow.id, editingStep.id, data);
+    setEditingStep(null);
   };
 
   return (
@@ -66,20 +49,19 @@ export const FlowDetailsPage = () => {
           ← Back to flows
         </Link>
 
-        <div className="space-y-2">
+        <div className="space-y-2 flex flex-row justify-between items-start">
           <h1 className="text-2xl font-semibold tracking-tight">{flow.name}</h1>
-          <span className="inline-block bg-slate-900 text-slate-50 text-xs px-3 py-1 rounded-full font-medium">
+          <p className="bg-slate-900 text-slate-50 text-xs px-3 py-1 rounded-full font-medium text-nowrap">
             {flow.steps.length} steps
-          </span>
+          </p>
         </div>
         <Card key="description" className="p-4 bg-gray-100">
           <h2 className="font-bold mb-2">Description</h2>
-          <pre className="whitespace-pre-wrap text-sm text-slate-700">
+          <p className="text-slate-700">
             {flow.description}
-          </pre>
+          </p>
         </Card>
 
-        {/* Steps + edit panel */}
         <Card key="edit-panel" className="p-4 space-y-4">
           <div className="flex basis-full">
             <h2 className="font-bold flex-auto">Steps</h2>
@@ -94,17 +76,46 @@ export const FlowDetailsPage = () => {
               <div key={step.id}>
                 <li
                   key={step.id}
-                  onClick={() => handleSelectStep(step.id)}
                   className={`flex items-center justify-between border rounded-md px-4 py-2 shadow-sm cursor-pointer
-                ${selectedStepId === step.id ? "bg-blue-50 border-blue-300" : "bg-white"}
+                ${editingStep?.id === step.id ? "bg-blue-50 border-blue-300" : "bg-white"}
               `}
                 >
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                      {index + 1}. {step.label}
-                    </span>
-                    <span className="text-xs text-slate-500 italic">{step.type}</span>
-                    <div className="prose prose-sm max-w-none mt-3">
+
+                  <div className="w-full">
+                    <div className="flex flex-row items-start justify-between">
+                      <div className="w-fit">
+                        <p className="text-lg font-medium">
+                          {index + 1}. {step.label}
+                        </p>
+                        <p className="text-sm text-slate-500 italic">{step.type}</p>
+                      </div>
+
+                      <div className="flex flex-row gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingStep(step);
+                          }}
+                          className="text-slate-500 p-2 rounded-md hover:bg-slate-50"
+                          aria-label="Edit step"
+                        >
+                          <Lineicons icon={Pencil1Stroke} size={24} strokeWidth={1.5}/>
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteStep(flow.id, step.id);
+                          }}
+                          className="text-red-500 p-2 rounded-md hover:bg-red-50"
+                          aria-label="Delete step"
+                        >
+                          <Lineicons icon={Trash3Stroke} size={24} strokeWidth={1.5}/>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 text-sm">
                       <ReactMarkdown
                         components={{
                           h1: ({children}) => (
@@ -126,45 +137,29 @@ export const FlowDetailsPage = () => {
                       </ReactMarkdown>
                     </div>
                   </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteStep(flow.id, step.id);
-                    }}
-                    className="ml-4 text-red-500 p-2 rounded-md hover:bg-red-50"
-                    aria-label="Delete step"
-                  >
-                    <Lineicons icon={Trash3Stroke} size={24} strokeWidth={1.5}/>
-                  </button>
-
                 </li>
-
-
-                {/*edit panel*/}
-                {selectedStepId && selectedStepId === step.id && (
-                  <Card className="mt-6 pt-6">
-                    <StepForm
-                      formId="update-step-form"
-                      onSave={handleEditForm}
-                      defaultValues={step}
-                    />
-                    <Button
-                      type="submit"
-                      form="update-step-form"
-                    >
-                      Save
-                    </Button>
-                  </Card>
-                )}
               </div>
             ))}
           </ul>
         </Card>
       </div>
-      {showModalCreateStep && createPortal(
-        <ModalDialog formId="create-step-form" onClose={() => setShowModalCreateStep(false)}>
-          <StepForm formId="create-step-form" onSave={handleCreateForm} />
+
+      {(showModalCreateStep || !!editingStep) && createPortal(
+        <ModalDialog
+          formId={`${showModalCreateStep ? "create":"update"}-step-form`}
+          onClose={() => {
+            showModalCreateStep
+              ? setShowModalCreateStep(false)
+              : setEditingStep(null);
+
+          }}
+        >
+          <StepForm
+            title={showModalCreateStep ? "Add a new step": "Edit step"}
+            formId={`${showModalCreateStep ? "create":"update"}-step-form`}
+            onSave={showModalCreateStep ? handleCreateForm : handleEditForm}
+            defaultValues={editingStep ?? undefined}
+          />
         </ModalDialog>,
         document.body
       )}
